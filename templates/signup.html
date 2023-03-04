@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %} Sign Up {% endblock %}
+
+{% block content %}
+
+        <legend class="title">Sign Up</legend>
+        {% for message in messages %}
+        	<div class="error-msg">{{ message }}</div>
+        {% endfor %}
+        <form action="" method="post">
+        {% csrf_token %}
+            <label>Username<span>*</span></label>
+            <input type="text" name="username" placeholder="Username" required>
+            <label>Email<span>*</span></label>
+            <input type="email" name="email" placeholder="Email" required>
+            <label>Password<span>*</span></label>
+            <input type="password" name="password1" placeholder="Password" required>
+            <label>Confirm Password<span>*</span></label>
+            <input type="password" name="password2" placeholder="Confirm Password" required>
+            <button class="signup-btn">Sign Up</button>
+            <div class="form-footer">
+                <span class="b">Already have an account?</span>
+                <a class="b" href="{% url 'signin' %}">Sign In</a>
+            </div>
+        </form>
+        
+{% endblock %}

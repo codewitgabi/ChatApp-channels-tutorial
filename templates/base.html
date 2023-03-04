@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %} {% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            box-shadow: hsl(0,0%,80%) 0 0 10px;
+            width: 80%;
+            margin: 2em auto;
+            padding: 1em;
+        }
+        .container form input {
+            width: 100%;
+            padding: 10px;
+        }
+        .title {
+            font-weight: 500;
+            font-size: 1.5rem;
+            margin-bottom: 1em;
+        }
+        form label {
+            font-size: 1.1rem;
+            font-weight: 300;
+            display: inline-block;
+            margin: 8px 0;
+        }
+        form label span {
+            color: red;
+        }
+        .signup-btn {
+            padding: 12px 50px;
+            background: #27282c;
+            display: inline-block;
+            margin-top: 1em;
+            color: #fff;
+            border: 2px solid orange;
+            border-radius: 50px;
+        }
+        .b {
+            font-size: 0.8rem;
+        }
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+        .form-footer {
+            margin-top: 0.5em;
+            margin-bottom: 1em;
+            text-align: center;
+        }
+        .error-msg {
+            color: red;
+            margin-bottom: 0.5em;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+	<div class="container">
+	{% block content %}
+	
+	{% endblock %}
+	</div>
+</body>
+</html>

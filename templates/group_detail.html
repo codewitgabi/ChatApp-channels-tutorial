@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DjangoChannels Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            margin: 2em auto;
+            padding: 10px;
+            max-width: 700px;
+            height: 90vh;
+            position: relative;
+        }
+        .container form input {
+            width: 100%;
+            padding: 12px;
+        }
+        .btn {
+            width: 100%;
+            background: #27282c;
+            color: #fff;
+            border: 2px solid orange;
+            padding: 10px;
+        }
+        .receiver {
+            background: #c8e3f6;
+            padding: 10px;
+            width: 70%;
+            margin: 5px 0;
+            clear: both;
+        }
+        .sender {
+            background: #f2bad5;
+            padding: 10px;
+            width: 70%;
+            float: right;
+            margin: 5px 0;
+        }
+        @media only screen and (max-width: 700px) {
+            .container {
+                min-width: max-content;
+                margin: 2em 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="chat-messages"></div>
+        <div class="form-wrapper">
+            <form action="" id="chat-form">
+                <input type="text" name="message" id="room-message-input" required autocapitalize="off"><br><br>
+                <button class="btn">Send</button>
+            </form>
+        </div>
+    </div>
+    
+	<script>
+		const room = "{{ group.id }}";
+		const form = document.querySelector("#chat-form");
+		let chatTag = document.querySelector("#chat-messages");
+		
+		const ws = "ws://" + window.location.host + "/ws/main/chat/" + room + "/";
+		/* Web socket handler */
+		const socket = new WebSocket(ws);
+		const user_id = "{{ request.user.id }}";
+		
+		/*
+			Gets message send by the server.
+		 */
+		socket.onmessage = function (e) {
+			let response = JSON.parse(e.data);
+			let messages = "";
+			
+			if (response.type == "connection_status") {
+				console.log(response.response)
+			} else {
+				for (let msg of response.response) {
+					if (Number(user_id) === msg.sender_id) {
+						messages += `
+						<div class="sender">
+                				<h4 class="name">${msg.sender}</h4>
+                				<p class="msg">${msg.body}</p>
+						</div>`;
+					} else {
+						messages += `
+						<div class="receiver">
+                				<h4 class="name">${msg.sender}</h4>
+                				<p class="msg">${msg.body}</p>
+						</div>`;
+					}
+				}
+			}
+			chatTag.innerHTML = messages;
+		}
+		
+		/*
+			Handles error of unexpected closing connection from the client.
+		*/
+		socket.onclose = function (e) {
+			alert("An error occured");
+		}
+		
+		form.addEventListener("submit", (e) => {
+			e.preventDefault();
+			/*
+				Send data to the server
+			*/
+			socket.send(JSON.stringify({"message": e.target.message.value}));
+			form.reset();
+		})
+		
+	</script>
+    
+</body>
+</html>

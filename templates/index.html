@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #27282c;
+            padding: 1em 5%;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .nav-links ul {
+            display: flex;
+            gap: 1em;
+        }
+        .nav-links ul li {
+            list-style: none;
+        }
+        main {
+            margin: 1em;
+            line-height: 2em;
+        }
+        main ol li {
+        	margin-left: 1em;
+        }
+        main ul li {
+        	margin-left: 2em;
+        }
+        main span {
+        	margin-left: 2em;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'index' %}">{{ request.user }}</a>
+        <div class="nav-links">
+            <ul>
+            {% if not request.user.is_authenticated %}
+                <li><a href="{% url 'signin' %}">Sign In</a></li>
+                <li><a href="{% url 'signup' %}">Sign Up</a></li>
+           {% else %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+           {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <main>
+    <h1>Groups</h1>
+    <br>
+    <ul>
+    	{% for group in groups %}
+    		<li>
+    			<a href="{% url 'view_group' group.id %}">{{ group.name }}</a>
+    		</li>
+    	{% endfor %}
+  </ul>
+    </main>
+</body>
+</html>
