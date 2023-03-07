@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DjangoChannels Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            margin: 2em auto;
+            padding: 10px;
+            max-width: 700px;
+            height: 90vh;
+            position: relative;
+        }
+        .container form input {
+            width: 100%;
+            padding: 12px;
+        }
+        .btn {
+            width: 100%;
+            background: #27282c;
+            color: #fff;
+            border: 2px solid orange;
+            padding: 10px;
+        }
+        .receiver {
+            background: #c8e3f6;
+            padding: 10px;
+            width: 70%;
+            margin: 5px 0;
+            clear: both;
+        }
+        .sender {
+            background: #f2bad5;
+            padding: 10px;
+            width: 70%;
+            float: right;
+            margin: 5px 0;
+        }
+        @media only screen and (max-width: 700px) {
+            .container {
+                max-width: 650px;
+                margin: 2em 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="user-chat-messages"></div>
+        <div class="form-wrapper">
+            <form action="" id="user-chat-form">
+                <input type="text" name="user_chat_message" id="chat-msg-input" required autocapitalize="off"><br><br>
+                <button class="btn">Send</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        const receiver_id = "{{ receiver }}";
+        const ws_url = `ws://${window.location.host}/ws/main/user/chat/${receiver_id}/`;
+        const socket = new WebSocket(ws_url);
+        const form = document.querySelector("#user-chat-form");
+        let chatBox = document.querySelector("#user-chat-messages");
+        
+        socket.onerror = (e) => {
+            alert("An error occurred!!");
+        }
+        
+        socket.onmessage = (e) => {
+            let data = JSON.parse(e.data);
+            let messages = "";
+            
+            if (data.type === "conn") {
+                console.log(`[INFO] ${data.response}`);
+            } else {
+                for (let msg of data.response) {
+				if (Number(receiver_id) !== msg.sender_id) {
+					messages += `
+					<div class="sender">
+                			<h4 class="name">${msg.sender}</h4>
+                			<p class="msg">${msg.message}</p>
+					</div>`;
+				} else {
+					messages += `
+					<div class="receiver">
+                			<h4 class="name">${msg.sender}</h4>
+                			<p class="msg">${msg.message}</p>
+					</div>`;
+				}
+			}
+			chatBox.innerHTML = messages;
+            }
+        }
+        
+        form.addEventListener("submit", (e) => {
+        	e.preventDefault();
+        	
+        	socket.send(JSON.stringify({
+        		"message": e.target.user_chat_message.value
+        	}))
+        	form.reset();
+        })
+        
+    </script>
+</body>
+</html>

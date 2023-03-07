@@ -104,7 +104,7 @@
 		/*
 			Handles error of unexpected closing connection from the client.
 		*/
-		socket.onclose = function (e) {
+		socket.onerror = function (e) {
 			alert("An error occured");
 		}
 		

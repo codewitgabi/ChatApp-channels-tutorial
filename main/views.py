@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from .models import *
+from django.contrib.auth.decorators import login_required
 
 
+@login_required(login_url="signin")
 def index(request):
 	groups = GroupChat.objects.all()
 	return render(request, "index.html", {"groups": groups})
@@ -63,7 +65,18 @@ def logout(request):
 	return redirect("signup")
 
 
+@login_required(login_url="signin")
 def view_group(request, group_id):
 	group = GroupChat.objects.get(id=group_id)
+	# verify group participants
+	if not request.user in group.participants.all():
+		return redirect("index")		
+		
 	return render(request, "group_detail.html", {"group": group})
 
+
+@login_required(login_url="signin")
+def user_to_user_chat(request, receiver_id):
+	receiver = User.objects.get(id=receiver_id)
+	print(receiver)
+	return render(request, "user_chat.html", {"receiver": receiver.id})
