@@ -85,7 +85,7 @@ class UserChatConsumer(AsyncWebsocketConsumer):
 		self.receiver = await self.get_receiver()
 		self.group_name = f"user_chat_{unique_id}"
 		
-		print(unique_id)
+		print(self.group_name)
 		
 		await self.channel_layer.group_add(
 			self.group_name,
