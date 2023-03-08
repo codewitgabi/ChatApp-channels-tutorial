@@ -11,6 +11,7 @@ class GroupChatConsumer(AsyncWebsocketConsumer):
 		self.user = self.scope.get("user")
 		self.room = self.scope["url_route"]["kwargs"].get("room_name")
 		self.group_name = f"chat_{self.room}"
+		
 		self.messages = await self.get_messages()
 		
 		await self.channel_layer.group_add(self.group_name, self.channel_name)
@@ -78,8 +79,13 @@ class UserChatConsumer(AsyncWebsocketConsumer):
 		
 		self.user = self.scope.get("user")
 		self.receiver_id = self.scope["url_route"]["kwargs"].get("receiver_id")
+		
+		unique_id = "".join(sorted(self.receiver_id + str(self.user.id)))
+		
 		self.receiver = await self.get_receiver()
-		self.group_name = f"user_chat_{secrets.token_hex(5)}"
+		self.group_name = f"user_chat_{unique_id}"
+		
+		print(unique_id)
 		
 		await self.channel_layer.group_add(
 			self.group_name,
@@ -102,7 +108,6 @@ class UserChatConsumer(AsyncWebsocketConsumer):
 		await self.channel_layer.group_discard(self.group_name, self.channel_name)
 	
 	async def receive(self, text_data):
-		print(self.group_name)
 		data = json.loads(text_data)
 		
 		await self.create_users_message(data.get("message"))
