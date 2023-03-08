@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 @login_required(login_url="signin")
 def index(request):
 	groups = GroupChat.objects.all()
-	return render(request, "index.html", {"groups": groups})
+	return render(request, "main/index.html", {"groups": groups})
 	
 
 def signup(request):
@@ -36,7 +36,7 @@ def signup(request):
 		else:
 			messages.error(request, "Passwords do not match")
 		
-	return render(request, "signup.html")
+	return render(request, "main/signup.html")
 
 
 def signin(request):
@@ -57,7 +57,7 @@ def signin(request):
 			messages.error(request, "Incorrect username or password")
 			return redirect("signin")
 		
-	return render(request, "signin.html")
+	return render(request, "main/signin.html")
 
 
 def logout(request):
@@ -72,11 +72,11 @@ def view_group(request, group_id):
 	if not request.user in group.participants.all():
 		return redirect("index")		
 		
-	return render(request, "group_detail.html", {"group": group})
+	return render(request, "main/group_detail.html", {"group": group})
 
 
 @login_required(login_url="signin")
 def user_to_user_chat(request, receiver_id):
 	receiver = User.objects.get(id=receiver_id)
 	print(receiver)
-	return render(request, "user_chat.html", {"receiver": receiver.id})
+	return render(request, "main/user_chat.html", {"receiver": receiver.id})
