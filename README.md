@@ -6,3 +6,12 @@ The chat directory uses the tutorial in `django-channels` documentation.
 
 ## main
 This holds an extensive explanation on how to use models in django-channels.
+
+## Installing the Project
+```
+
+$ pip install -r requirements.txt
+$ python manage.py migrate
+$ python manage.py runserver
+
+```
