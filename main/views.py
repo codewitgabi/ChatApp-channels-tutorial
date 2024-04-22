@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
-from .models import *
+from .models import GroupChat
 from django.contrib.auth.decorators import login_required
 
 
@@ -69,7 +69,7 @@ def logout(request):
 def view_group(request, group_id):
 	group = GroupChat.objects.get(id=group_id)
 	# verify group participants
-	if not request.user in group.participants.all():
+	if request.user not in group.participants.all():
 		return redirect("index")		
 		
 	return render(request, "main/group_detail.html", {"group": group})
